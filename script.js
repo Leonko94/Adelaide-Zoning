@@ -1,10 +1,7 @@
 let map = L.map('map').setView([-34.9285, 138.6007], 11);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 18
 }).addTo(map);
-
-L.Control.geocoder().addTo(map);
 
 let geojsonLayer;
 let allFeatures = [];
@@ -19,6 +16,11 @@ fetch("zones.json")
       onEachFeature: onEachFeature
     }).addTo(map);
   });
+
+function onEachFeature(feature, layer) {
+  let props = feature.properties;
+  layer.bindPopup(\`<strong>\${props.Zone}</strong><br>Suburb: \${props.Suburb}<br>Area: \${props.Area} m²<br>Frontage: \${props.Frontage} m\`);
+}
 
 function populateZoneSelect(features) {
   const zones = [...new Set(features.map(f => f.properties.Zone + " (" + f.properties.Zone_Code + ")"))];
@@ -42,58 +44,40 @@ function populateSuburbSelect(features) {
   });
 }
 
-function onEachFeature(feature, layer) {
-  const p = feature.properties;
-  const area = p.Area || "N/A";
-  const frontage = p.Frontage || "N/A";
-  const zone = p.Zone + " (" + p.Zone_Code + ")";
-  const feas = getFeasibility(p);
-  layer.bindPopup(\`\${p.Suburb}<br/>\${zone}<br/>Area: \${area}m²<br/>Frontage: \${frontage}m<br/>\${feas}\`);
-}
-
 function applyFilter() {
-  const zoneVal = document.getElementById('zoneSelect').value;
-  const suburbVal = document.getElementById('suburbSelect').value;
+  const zone = document.getElementById('zoneSelect').value;
+  const suburb = document.getElementById('suburbSelect').value;
   const minArea = parseFloat(document.getElementById('minArea').value) || 0;
-  const minFrontage = parseFloat(document.getElementById('minFrontage').value) || 0;
+  const minFront = parseFloat(document.getElementById('minFrontage').value) || 0;
+
+  if (geojsonLayer) map.removeLayer(geojsonLayer);
 
   const filtered = allFeatures.filter(f => {
     const p = f.properties;
-    const matchZone = !zoneVal || (p.Zone + " (" + p.Zone_Code + ")") === zoneVal;
-    const matchSuburb = !suburbVal || p.Suburb === suburbVal;
-    const matchArea = !p.Area || parseFloat(p.Area) >= minArea;
-    const matchFront = !p.Frontage || parseFloat(p.Frontage) >= minFrontage;
-    return matchZone && matchSuburb && matchArea && matchFront;
+    return (!zone || (p.Zone + " (" + p.Zone_Code + ")") === zone) &&
+           (!suburb || p.Suburb === suburb) &&
+           (!minArea || p.Area >= minArea) &&
+           (!minFront || p.Frontage >= minFront);
   });
 
-  if (geojsonLayer) geojsonLayer.remove();
   geojsonLayer = L.geoJSON(filtered, {
     onEachFeature: onEachFeature
   }).addTo(map);
 }
 
-function getFeasibility(p) {
-  let result = "";
-  const a = parseFloat(p.Area);
-  const f = parseFloat(p.Frontage);
-  if (a >= 600 && f >= 18) result = "✓ 2 Detached Homes";
-  else if (a >= 500 && f >= 15) result = "✓ 2 Semi-Detached";
-  else if (a >= 450 && f >= 14) result = "✓ 2 Row Dwellings";
-  else result = "Likely 1 dwelling";
-  return result;
-}
-
 function exportCSV() {
-  const rows = [["Suburb", "Zone", "Area", "Frontage", "Feasibility"]];
+  const rows = [["Zone", "Zone_Code", "Suburb", "Area", "Frontage"]];
   geojsonLayer.eachLayer(layer => {
     const p = layer.feature.properties;
-    rows.push([p.Suburb, p.Zone + " (" + p.Zone_Code + ")", p.Area, p.Frontage, getFeasibility(p)]);
+    rows.push([p.Zone, p.Zone_Code, p.Suburb, p.Area, p.Frontage]);
   });
-  const csv = rows.map(r => r.join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "filtered_parcels.csv";
-  a.click();
+
+  let csv = rows.map(r => r.join(",")).join("\n");
+  let blob = new Blob([csv], { type: "text/csv" });
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "filtered_zones.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

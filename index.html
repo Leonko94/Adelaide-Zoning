@@ -1,29 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adelaide Zoning Viewer</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>Adelaide Zoning</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
-  <div id="sidebar">
-    <label for="zoneSelect">Zone:</label>
-    <select id="zoneSelect">
-      <option value="">-- Select Zone --</option>
-    </select><br />
-    <label for="suburbSelect">Suburb:</label>
-    <select id="suburbSelect">
-      <option value="">-- Select Suburb --</option>
-    </select><br />
-    <label for="minArea">Min Area (m²):</label>
-    <input type="number" id="minArea" /><br />
-    <label for="minFrontage">Min Frontage (m):</label>
-    <input type="number" id="minFrontage" /><br />
+  <div id="controls">
+    <label>Zone: <select id="zoneSelect"><option value="">-- Select Zone --</option></select></label><br>
+    <label>Suburb: <select id="suburbSelect"><option value="">-- Select Suburb --</option></select></label><br>
+    <label>Min Area (m²): <input id="minArea" type="number" /></label><br>
+    <label>Min Frontage (m): <input id="minFrontage" type="number" /></label><br>
     <button onclick="applyFilter()">Apply Filter</button>
     <button onclick="exportCSV()">Export CSV</button>
   </div>
