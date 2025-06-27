@@ -1,47 +1,33 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Adelaide Zoning Full Viewer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adelaide Zoning Viewer</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 </head>
 <body>
-  <div id="controls">
-    <h2>Filter Options</h2>
-    <label>Suburb:
-      <select id="suburbFilter"><option value="">All Suburbs</option></select>
-    </label>
-    <label>Zone:
-      <select id="zoneFilter" multiple>
-        <option value="HDN">Housing Diversity Neighbourhood (HDN)</option>
-        <option value="GN">General Neighbourhood (GN)</option>
-        <option value="SN">Suburban Neighbourhood (SN)</option>
-        <option value="MST">Master Planned Township (MST)</option>
-        <option value="RUL">Rural Living (RUL)</option>
-        <option value="RULH">Rural Horticulture (RULH)</option>
-        <option value="UCN">Urban Corridor (Living) (UCN)</option>
-      </select>
-    </label>
-    <label>Min Lot Size (m²): <input type="number" id="minArea" value="700"></label>
-    <label>Min Frontage (m): <input type="number" id="minFrontage" value="21"></label>
-    <label>Dwelling Type:
-      <select id="dwellingType">
-        <option value="detached">Detached</option>
-        <option value="semi">Semi-detached</option>
-        <option value="row">Row dwelling</option>
-        <option value="group">Group dwelling</option>
-      </select>
-    </label>
-    <input type="text" id="searchBox" placeholder="Search address..." />
-    <button onclick="applyFilters()">Apply Filters</button>
+  <div id="sidebar">
+    <label for="zoneSelect">Zone:</label>
+    <select id="zoneSelect">
+      <option value="">-- Select Zone --</option>
+    </select><br />
+    <label for="suburbSelect">Suburb:</label>
+    <select id="suburbSelect">
+      <option value="">-- Select Suburb --</option>
+    </select><br />
+    <label for="minArea">Min Area (m²):</label>
+    <input type="number" id="minArea" /><br />
+    <label for="minFrontage">Min Frontage (m):</label>
+    <input type="number" id="minFrontage" /><br />
+    <button onclick="applyFilter()">Apply Filter</button>
     <button onclick="exportCSV()">Export CSV</button>
   </div>
   <div id="map"></div>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
