@@ -1,25 +1,26 @@
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Adelaide Zoning Map</title>
+  <title>Adelaide Zoning Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="controls">
-    <input type="text" id="searchBox" placeholder="Search address..." />
     <select id="zoneFilter">
       <option value="">All Zones</option>
       <option value="HDN">Housing Diversity Neighbourhood (HDN)</option>
+      <option value="GN">General Neighbourhood (GN)</option>
+      <option value="SN">Suburban Neighbourhood (SN)</option>
       <option value="MST">Master Planned Township (MST)</option>
       <option value="RUL">Rural Living (RUL)</option>
       <option value="RULH">Rural Horticulture (RULH)</option>
-      <option value="GN">General Neighbourhood (GN)</option>
-      <option value="SN">Suburban Neighbourhood (SN)</option>
       <option value="UCN">Urban Corridor (Living) (UCN)</option>
     </select>
-    <button onclick="applyFilter()">Apply Filter</button>
+    <button id="filterButton">Apply Filter</button>
   </div>
   <div id="map"></div>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>

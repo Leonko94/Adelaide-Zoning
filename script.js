@@ -1,39 +1,36 @@
 
-let map = L.map('map').setView([-34.9285, 138.6007], 11);
+let map = L.map('map').setView([-34.9285, 138.6007], 12);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 18,
+  maxZoom: 19,
 }).addTo(map);
 
-let zoneLayer;
+let geojsonLayer;
+let originalData;
 
-fetch('zones-simplified.geojson')
+fetch('zones.geojson')
   .then(res => res.json())
   .then(data => {
-    zoneLayer = L.geoJSON(data, {
+    originalData = data;
+    geojsonLayer = L.geoJSON(data, {
       onEachFeature: (feature, layer) => {
-        const name = feature.properties.ZoneName || "Unknown zone";
+        const name = feature.properties.ZoneName || "Unknown";
         const code = feature.properties.ZoneCode || "";
         layer.bindPopup(`<strong>${name}</strong> (${code})`);
       }
     }).addTo(map);
   });
 
-function applyFilter() {
-  const zoneValue = document.getElementById('zoneFilter').value;
-  if (!zoneLayer) return;
+document.getElementById("filterButton").addEventListener("click", () => {
+  const selected = document.getElementById("zoneFilter").value;
 
-  zoneLayer.clearLayers();
-
-  fetch('zones-simplified.geojson')
-    .then(res => res.json())
-    .then(data => {
-      const filtered = {
-        ...data,
-        features: data.features.filter(f => {
-          const code = f.properties.ZoneCode || "";
-          return zoneValue === "" || code === zoneValue;
-        })
-      };
-      zoneLayer.addData(filtered);
-    });
-}
+  if (geojsonLayer) {
+    geojsonLayer.clearLayers();
+    const filtered = {
+      type: "FeatureCollection",
+      features: originalData.features.filter(f =>
+        !selected || f.properties.ZoneCode === selected
+      )
+    };
+    geojsonLayer.addData(filtered);
+  }
+});
