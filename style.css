@@ -1,24 +1,18 @@
 
-body { margin: 0; font-family: sans-serif; }
-#map { position: absolute; top: 0; bottom: 0; right: 0; left: 300px; }
+body, html { margin: 0; padding: 0; height: 100%; }
+#map { height: 100%; width: 100%; }
 #controls {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 280px;
-  padding: 10px;
-  background: white;
   z-index: 1000;
-  height: 100vh;
-  overflow-y: auto;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+  background: white;
+  padding: 10px;
+  top: 10px;
+  left: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
-label, input, select {
+#searchBox, #zoneFilter {
+  margin-bottom: 5px;
   display: block;
-  width: 100%;
-  margin-bottom: 10px;
-}
-#addressSearch {
-  padding: 5px;
-  font-size: 1em;
+  width: 200px;
 }
