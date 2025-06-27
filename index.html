@@ -1,12 +1,37 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Adelaide Zoning Map</title>
+  <title>Adelaide Zoning Viewer</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="controls">
+    <h3>Filters</h3>
+    <label>Zone:
+      <select id="zoneFilter" multiple>
+        <option value="HDN">HDN</option>
+        <option value="GN">GN</option>
+        <option value="SN">SN</option>
+      </select>
+    </label>
+    <label>Min Lot Size (m²):
+      <input type="number" id="minArea" value="700" />
+    </label>
+    <label>Min Frontage (m):
+      <input type="number" id="minFrontage" value="21" />
+    </label>
+    <label>Dwelling Type:
+      <select id="dwellingType">
+        <option value="detached">Detached</option>
+        <option value="semi">Semi-detached</option>
+        <option value="row">Row dwelling</option>
+        <option value="group">Group dwelling</option>
+      </select>
+    </label>
+  </div>
   <div id="map"></div>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="script.js"></script>
