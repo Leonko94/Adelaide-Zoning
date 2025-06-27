@@ -13,4 +13,12 @@ body { margin: 0; font-family: sans-serif; }
   overflow-y: auto;
   box-shadow: 2px 0 5px rgba(0,0,0,0.2);
 }
-label { display: block; margin: 10px 0; }
+label, input, select {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+#addressSearch {
+  padding: 5px;
+  font-size: 1em;
+}

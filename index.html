@@ -4,6 +4,7 @@
 <head>
   <title>Adelaide Zoning Viewer</title>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -12,7 +13,7 @@
     <h3>Filters</h3>
     <label>Zone:
       <select id="zoneFilter" multiple>
-        <option value="HDN">HDN</option>
+        <option value="HDN" selected>HDN</option>
         <option value="GN">GN</option>
         <option value="SN">SN</option>
       </select>
@@ -31,9 +32,13 @@
         <option value="group">Group dwelling</option>
       </select>
     </label>
+    <input type="text" id="addressSearch" placeholder="Search address..." />
+    <button onclick="applyFilters()">Apply Filters</button>
   </div>
   <div id="map"></div>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <script src="script.js"></script>
 </body>
 </html>

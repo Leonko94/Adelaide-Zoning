@@ -2,27 +2,56 @@
 const map = L.map('map').setView([-34.9285, 138.6007], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
+L.Control.geocoder({ defaultMarkGeocode: false })
+  .on('markgeocode', function(e) {
+    map.setView(e.geocode.center, 17);
+    L.marker(e.geocode.center).addTo(map).bindPopup(e.geocode.name).openPopup();
+  })
+  .addTo(map);
+
 let geojsonLayer;
+let originalData;
 
 fetch('zones.geojson')
   .then(res => res.json())
   .then(data => {
-    geojsonLayer = L.geoJSON(data, {
-      style: feature => ({ color: "#ff7800", weight: 1 }),
-      onEachFeature: (feature, layer) => {
-        const zone = feature.properties.name || feature.properties.value;
-        const area = feature.properties.shape_Area;
-        const frontage = estimateFrontage(feature.geometry);
-
-        layer.bindPopup(
-          `<strong>Zone:</strong> ${zone}<br>
-           <strong>Area:</strong> ${area.toFixed(1)} m²<br>
-           <strong>Frontage:</strong> ${frontage.toFixed(1)} m<br>
-           <strong>Build Potential:</strong><br>` + calculateFeasibility(area, frontage)
-        );
-      }
-    }).addTo(map);
+    originalData = data;
+    renderLayer(data);
   });
+
+function renderLayer(data) {
+  if (geojsonLayer) map.removeLayer(geojsonLayer);
+  geojsonLayer = L.geoJSON(data, {
+    style: feature => ({ color: "#0077cc", weight: 1 }),
+    onEachFeature: (feature, layer) => {
+      const zone = feature.properties.name || feature.properties.value;
+      const area = feature.properties.shape_Area;
+      const frontage = estimateFrontage(feature.geometry);
+
+      layer.bindPopup(
+        `<strong>Zone:</strong> ${zone}<br>
+         <strong>Area:</strong> ${area.toFixed(1)} m²<br>
+         <strong>Frontage:</strong> ${frontage.toFixed(1)} m<br>
+         <strong>Build Potential:</strong><br>` + calculateFeasibility(area, frontage)
+      );
+    }
+  }).addTo(map);
+}
+
+function applyFilters() {
+  const selectedZones = Array.from(document.getElementById('zoneFilter').selectedOptions).map(o => o.value);
+  const minArea = parseFloat(document.getElementById('minArea').value);
+  const minFrontage = parseFloat(document.getElementById('minFrontage').value);
+
+  const filtered = originalData.features.filter(f => {
+    const zone = f.properties.name || f.properties.value;
+    const area = f.properties.shape_Area;
+    const frontage = estimateFrontage(f.geometry);
+    return selectedZones.includes(zone) && area >= minArea && frontage >= minFrontage;
+  });
+
+  renderLayer({ type: 'FeatureCollection', features: filtered });
+}
 
 function estimateFrontage(geometry) {
   const coords = geometry.coordinates[0];
